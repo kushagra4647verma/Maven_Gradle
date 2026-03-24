@@ -17,11 +17,18 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
+
+        stage('Run Application') {
+            steps {
+                sh 'nohup java -jar target/my-app-1.0-SNAPSHOT.jar &'
+            }
+        }
     }
 
     post {
         success {
-            echo 'Build successful!'
+            archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+            echo 'Build and deployment successful!'
         }
         failure {
             echo 'Build failed!'
